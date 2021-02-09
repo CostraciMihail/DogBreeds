@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:DogBreeds/Screens/DBBreedsList/DBBreedsListViewModel.dart';
+import 'package:DogBreeds/Screens/DBSubBreedsList/DBSubBreedsListViewModel.dart';
 import 'package:DogBreeds/Screens/DBBreedsList/CustomWidgets/DBBreedsGridViewCell.dart';
 
-class DBBreedsListScreen extends StatefulWidget {
+class DBSubBreedsListScreen extends StatefulWidget {
   final _breedsCellsFactory = DBBreedsGridViewCellFactory();
-  final viewModel = DBBreedsListViewModel();
+  final viewModel = DBSubBreedsListViewModel();
 
-  DBBreedsListScreen({Key key}) : super(key: key);
+  DBSubBreedsListScreen({Key key}) : super(key: key);
 
   @override
-  _DBBreedsListScreenState createState() => _DBBreedsListScreenState();
+  _DBSubBreedsListScreenState createState() => _DBSubBreedsListScreenState();
 }
 
-class _DBBreedsListScreenState extends State<DBBreedsListScreen> {
+class _DBSubBreedsListScreenState extends State<DBSubBreedsListScreen> {
   var _breedsCells = List<DBBreedsGridViewCell>();
   var _isLoadingData = false;
 
@@ -21,10 +21,10 @@ class _DBBreedsListScreenState extends State<DBBreedsListScreen> {
     super.initState();
 
     _isLoadingData = true;
-    widget.viewModel.loadAllDogBreeds().then((list) {
+    widget.viewModel.loadAllDogSubBreeds().then((list) {
       setState(() {
-        _breedsCells =
-            widget._breedsCellsFactory.makeBreedsCells(list, widget.viewModel);
+        _breedsCells = widget._breedsCellsFactory
+            .makeSubBreedsCells(list, widget.viewModel);
         _isLoadingData = false;
       });
     });
@@ -33,7 +33,7 @@ class _DBBreedsListScreenState extends State<DBBreedsListScreen> {
   @override
   Widget build(context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Dog Breeds")),
+        appBar: AppBar(title: Text("Sub Breeds")),
         body: _isLoadingData
             ? Center(child: CircularProgressIndicator())
             : GridView.count(

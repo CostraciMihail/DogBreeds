@@ -12,8 +12,8 @@ class DBSubBreedsListViewModel {
     return _allDogBreeds;
   }
 
-  Future<List<DBDogBreedsModel>> loadAllDogSubBreeds() async {
-    return dogBreedsEnpoint.getAllDogBreeds();
+  Future<DBDogBreedsModel> loadAllDogSubBreeds(String dogBreed) async {
+    return dogBreedsEnpoint.getAllDogSubBreeds(dogBreed);
   }
 
   Future<String> getRandomImageUrlFor(String dogBreed) async {
@@ -25,7 +25,7 @@ class DBSubBreedsListViewModel {
     var mockArray = List<DBDogBreedsModel>();
 
     await Future.delayed(Duration(seconds: 1, milliseconds: 500), () {
-      for (int i = 0; i < 300; i++) {
+      for (int i = 0; i < 30; i++) {
         mockArray.add(DBDogBreedsModel(name: "Breed $i", subBreeds: []));
       }
     });

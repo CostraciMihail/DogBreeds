@@ -21,7 +21,7 @@ class _DBSubBreedsListScreenState extends State<DBSubBreedsListScreen> {
     super.initState();
 
     _isLoadingData = true;
-    widget.viewModel.loadAllDogSubBreeds().then((list) {
+    widget.viewModel.loadAllDogSubBreeds("hound").then((list) {
       setState(() {
         _breedsCells = widget._breedsCellsFactory
             .makeSubBreedsCells(list, widget.viewModel);
@@ -36,13 +36,22 @@ class _DBSubBreedsListScreenState extends State<DBSubBreedsListScreen> {
         appBar: AppBar(title: Text("Sub Breeds")),
         body: _isLoadingData
             ? Center(child: CircularProgressIndicator())
-            : GridView.count(
-                primary: false,
-                padding: const EdgeInsets.all(20),
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                crossAxisCount: 3,
-                children: _breedsCells,
+            : Stack(
+                alignment: AlignmentDirectional.topCenter,
+                children: [
+                  Text(
+                    "Hound",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  GridView.count(
+                    primary: false,
+                    padding: const EdgeInsets.all(20),
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    crossAxisCount: 3,
+                    children: _breedsCells,
+                  )
+                ],
               ));
   }
 }

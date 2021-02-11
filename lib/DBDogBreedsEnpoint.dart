@@ -4,6 +4,7 @@ import 'package:DogBreeds/DBDogBreedModel.dart';
 
 abstract class DBDogBreedsEnpointInterface {
   Future<List<DBDogBreedsModel>> getAllDogBreeds();
+  Future<DBDogBreedsModel> getAllDogSubBreeds(String dogBreed);
   Future<String> getBreedRadomImageUrl(String dogBreed);
   Future<List<String>> getBreedRadomImagesUrl(String dogBreeds);
   Future<String> getSubBreedRadomImage(String subBreeds);
@@ -16,6 +17,9 @@ class DBClientAPI {
       {Map<String, dynamic> headers}) async {
     http.Response response;
 
+    print('\n*** Request url: $url');
+    print('Method: ${requestMethod.toString()}');
+
     switch (requestMethod) {
       case DBRequestMethod.GET:
         response = await http.get(url);
@@ -27,10 +31,15 @@ class DBClientAPI {
         break;
     }
 
-    if (response.statusCode == 200) {
+    print('\n*** Response url: $url');
+    print('Method: ${requestMethod.toString()}');
+    print('Status code: ${response.statusCode}');
+
+    if (response.statusCode >= 200 && response.statusCode <= 300) {
+      print("Body: ${jsonDecode(response.body)}");
       return response;
     } else {
-      throw Exception('Fail to make request');
+      throw Exception('$response');
     }
   }
 }
@@ -44,30 +53,40 @@ class DBDogBreedsEnpoint implements DBDogBreedsEnpointInterface {
     final responseFuture = _apiClient.makeRequest(
         "https://dog.ceo/api/breeds/list/all", DBRequestMethod.GET);
 
-    var dogBreedsList;
-    await responseFuture.then((response) {
-      dogBreedsList =
+    return responseFuture.then((response) {
+      var dogBreedsList =
           DBDogBreedsListModel.fromJson(jsonDecode(response.body)).dogBreeds;
+      return Future<List<DBDogBreedsModel>>.value(dogBreedsList);
     });
-
-    return dogBreedsList;
   }
 
-// Return an array with random images with selected breed.
+  Future<DBDogBreedsModel> getAllDogSubBreeds(String dogBreed) async {
+    final responseFuture = _apiClient.makeRequest(
+        "https://dog.ceo/api/breed/$dogBreed/list", DBRequestMethod.GET);
+
+    return responseFuture.then((response) {
+      final dogSubBreedsList =
+          List<String>.from(jsonDecode(response.body)["message"]);
+
+      return Future<DBDogBreedsModel>.value(
+          DBDogBreedsModel(name: dogBreed, subBreeds: dogSubBreedsList));
+    });
+  }
+
+  // Return an radom image url for specific dog breed name.
   Future<String> getBreedRadomImageUrl(String dogBreed) async {
     final responseFuture = _apiClient.makeRequest(
-        "https://dog.ceo/api/breed/$dogBreed/images/random",
+        "https://dog.ceo/api/breed/${dogBreed.toLowerCase()}/images/random",
         DBRequestMethod.GET);
 
-    var imageUrl;
-    responseFuture.then((response) {
-      print("Response: ${jsonDecode(response.body)}");
-      // imageUrl = jsonDecode(response.body)["message"] as String;
+    return responseFuture.then((response) {
+      var imageUrl = jsonDecode(response.body)["message"] as String;
+      print("Response: $imageUrl");
+      return Future<String>.value(imageUrl);
     }).catchError((error) {
       print('Fail to load image with error: $error');
+      return Future<String>.error(error);
     });
-
-    return imageUrl;
   }
 
   // Return an array with random images with selected breed.
@@ -75,12 +94,18 @@ class DBDogBreedsEnpoint implements DBDogBreedsEnpointInterface {
     final responseFuture = _apiClient.makeRequest(
         "https://dog.ceo/api/breed/$dogBreeds/images", DBRequestMethod.GET);
 
-    var imagesUrlList = List<String>();
-    responseFuture.then((response) {
-      imagesUrlList = List<String>.from(jsonDecode(response.body)["messages"]);
+    return responseFuture.then((response) {
+      var imagesUrlList =
+          List<String>.from(jsonDecode(response.body)["messages"]);
+      return Future<List<String>>.value(imagesUrlList);
     });
 
-    return imagesUrlList;
+    // var imagesUrlList = List<String>();
+    // responseFuture.then((response) {
+    //   imagesUrlList = List<String>.from(jsonDecode(response.body)["messages"]);
+    // });
+
+    // return imagesUrlList;
   }
 
   Future<String> getSubBreedRadomImage(String subBreeds) async {

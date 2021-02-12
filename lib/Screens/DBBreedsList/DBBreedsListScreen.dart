@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:DogBreeds/Screens/DBBreedsList/DBBreedsListViewModel.dart';
 import 'package:DogBreeds/Screens/DBBreedsList/CustomWidgets/DBBreedsGridViewCell.dart';
+import 'package:DogBreeds/Screens/DBBreedsList/CustomWidgets/DBBreedsGridViewCellFactory.dart';
 
 class DBBreedsListScreen extends StatefulWidget {
   final _breedsCellsFactory = DBBreedsGridViewCellFactory();

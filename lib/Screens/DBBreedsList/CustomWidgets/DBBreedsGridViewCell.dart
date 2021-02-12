@@ -1,17 +1,22 @@
 import 'package:DogBreeds/DBDogBreedsEnpoint.dart';
-import 'package:DogBreeds/Screens/DBSubBreedsList/DBSubBreedsListScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:DogBreeds/DBDogBreedModel.dart';
-import 'package:DogBreeds/Screens/DBBreedsList/DBBreedsListViewModel.dart';
-import 'package:DogBreeds/Screens/DBSubBreedsList/DBSubBreedsListViewModel.dart';
+import 'package:DogBreeds/DBExtensions.dart';
 
 /// DBBreedsGridViewCell
 ///
 class DBBreedsGridViewCell extends StatefulWidget {
-  final DBDogBreedsModel dogBreed;
+  final DBDogBreedModel dogBreed;
+  final DBDogSubBreedModel dogSubBreed;
   final bool allowTapAction;
+  bool get isSubDogBreedType {
+    return dogSubBreed != null;
+  }
 
-  DBBreedsGridViewCell(this.dogBreed, {this.allowTapAction = true});
+  final Function(BuildContext, DBDogBreedModel, DBDogSubBreedModel) onTapAction;
+
+  DBBreedsGridViewCell(this.dogBreed, this.dogSubBreed,
+      {this.allowTapAction = true, @required this.onTapAction});
 
   @override
   State<StatefulWidget> createState() => _DBBreedsGridViewCellState();
@@ -29,11 +34,10 @@ class _DBBreedsGridViewCellState extends State<DBBreedsGridViewCell> {
         child: FutureBuilder(
       future: _loadImage(),
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        _imageUrl = snapshot.data;
         if (snapshot.hasData) {
           return FadeInImage.assetNetwork(
-              // fit: BoxFit.fitHeight,
-              placeholder: "images/placeholder-image.png",
-              image: snapshot.data);
+              placeholder: "images/placeholder-image.png", image: _imageUrl);
         } else if (snapshot.hasError) {
           return Icon(Icons.warning_amber_rounded);
         } else {
@@ -46,7 +50,9 @@ class _DBBreedsGridViewCellState extends State<DBBreedsGridViewCell> {
   Widget get _titleWidget {
     return Container(
         alignment: AlignmentDirectional.bottomCenter,
-        child: Text(widget.dogBreed.name));
+        child: widget.isSubDogBreedType
+            ? Text(widget.dogSubBreed.name.capitalize())
+            : Text(widget.dogBreed.name.capitalize()));
   }
 
   @override
@@ -56,58 +62,39 @@ class _DBBreedsGridViewCellState extends State<DBBreedsGridViewCell> {
             alignment: AlignmentDirectional.center,
             children: [_imageWidget, _titleWidget]),
         onTap: () {
-          moveToNextScreen(context);
+          widget.onTapAction(context, widget.dogBreed, widget.dogSubBreed);
         });
   }
 
-  // Actions
-  void moveToNextScreen(BuildContext context) {
-    if (widget.allowTapAction) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => DBSubBreedsListScreen()));
-    }
+  // Helpers
+
+  Future<String> _loadImage() {
+    return widget.isSubDogBreedType
+        ? _loadDogSubBreedImage()
+        : _loadDogBreedImage();
   }
 
-  // Helpers
-  Future<String> _loadImage() async {
+  Future<String> _loadDogBreedImage() async {
     return _endpoint
         .getBreedRadomImageUrl(widget.dogBreed.name)
         .then((urlString) {
       _imageUrl = urlString;
+      widget.dogBreed.imageUrl = urlString;
       return Future<String>.value(urlString);
     }).catchError((error) {
       return Future<String>.error(error);
     });
   }
-}
 
-/// DBBreedsGridViewCellFactory
-///
-class DBBreedsGridViewCellFactory {
-  List<DBBreedsGridViewCell> makeBreedsCells(
-      List<DBDogBreedsModel> dogBreeds, DBBreedsListViewModel viewModel) {
-    var cells = List<DBBreedsGridViewCell>();
-
-    for (var dogBreed in dogBreeds) {
-      var cell = DBBreedsGridViewCell(dogBreed);
-      cells.add(cell);
-    }
-
-    return cells;
-  }
-
-  List<DBBreedsGridViewCell> makeSubBreedsCells(
-      DBDogBreedsModel dogBreed, DBSubBreedsListViewModel viewModel) {
-    var cells = List<DBBreedsGridViewCell>();
-
-    for (var subBreed in dogBreed.subBreeds) {
-      var cell = DBBreedsGridViewCell(
-        dogBreed,
-        allowTapAction: false,
-      );
-      cells.add(cell);
-    }
-
-    return cells;
+  Future<String> _loadDogSubBreedImage() async {
+    return _endpoint
+        .getSubBreedRadomImageUrl(widget.dogBreed.name, widget.dogSubBreed.name)
+        .then((urlString) {
+      _imageUrl = urlString;
+      widget.dogSubBreed.imageUrl = urlString;
+      return Future<String>.value(urlString);
+    }).catchError((error) {
+      return Future<String>.error(error);
+    });
   }
 }

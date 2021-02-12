@@ -1,14 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:DogBreeds/DBDogBreedModel.dart';
-
-abstract class DBDogBreedsEnpointInterface {
-  Future<List<DBDogBreedsModel>> getAllDogBreeds();
-  Future<DBDogBreedsModel> getAllDogSubBreeds(String dogBreed);
-  Future<String> getBreedRadomImageUrl(String dogBreed);
-  Future<List<String>> getBreedRadomImagesUrl(String dogBreeds);
-  Future<String> getSubBreedRadomImage(String subBreeds);
-}
+import 'package:DogBreeds/DBExtensions.dart';
 
 enum DBRequestMethod { GET, POST }
 
@@ -44,39 +37,54 @@ class DBClientAPI {
   }
 }
 
+abstract class DBDogBreedsEnpointInterface {
+  Future<List<DBDogBreedModel>> getAllDogBreeds();
+  Future<DBDogBreedModel> getAllDogSubBreeds(String dogBreed);
+  Future<String> getBreedRadomImageUrl(String dogBreed);
+  Future<String> getSubBreedRadomImageUrl(String dogBreed, String subBreed);
+  Future<Map<String, List<DBDogSubBreedModel>>> getAllBreedRadomImagesUrlFor(
+      DBDogBreedModel dogBreed);
+}
+
 class DBDogBreedsEnpoint implements DBDogBreedsEnpointInterface {
   DBClientAPI _apiClient;
 
+  static String hostName = 'https://dog.ceo';
+  static String imageHostName = 'https://images.dog.ceo';
+  static String allBreedImagesPath(String dogBreed) {
+    return '/api/breed/$dogBreed/images';
+  }
+
   DBDogBreedsEnpoint() : _apiClient = DBClientAPI();
 
-  Future<List<DBDogBreedsModel>> getAllDogBreeds() async {
+  Future<List<DBDogBreedModel>> getAllDogBreeds() async {
     final responseFuture = _apiClient.makeRequest(
-        "https://dog.ceo/api/breeds/list/all", DBRequestMethod.GET);
+        "$hostName/api/breeds/list/all", DBRequestMethod.GET);
 
     return responseFuture.then((response) {
       var dogBreedsList =
           DBDogBreedsListModel.fromJson(jsonDecode(response.body)).dogBreeds;
-      return Future<List<DBDogBreedsModel>>.value(dogBreedsList);
+      return Future<List<DBDogBreedModel>>.value(dogBreedsList);
     });
   }
 
-  Future<DBDogBreedsModel> getAllDogSubBreeds(String dogBreed) async {
+  Future<DBDogBreedModel> getAllDogSubBreeds(String dogBreed) async {
     final responseFuture = _apiClient.makeRequest(
-        "https://dog.ceo/api/breed/$dogBreed/list", DBRequestMethod.GET);
+        "$hostName/api/breed/$dogBreed/list", DBRequestMethod.GET);
 
     return responseFuture.then((response) {
       final dogSubBreedsList =
           List<String>.from(jsonDecode(response.body)["message"]);
 
-      return Future<DBDogBreedsModel>.value(
-          DBDogBreedsModel(name: dogBreed, subBreeds: dogSubBreedsList));
+      return Future<DBDogBreedModel>.value(DBDogBreedModel(
+          name: dogBreed, subBreeds: dogSubBreedsList.toListOfDogSubBreeds()));
     });
   }
 
   // Return an radom image url for specific dog breed name.
   Future<String> getBreedRadomImageUrl(String dogBreed) async {
     final responseFuture = _apiClient.makeRequest(
-        "https://dog.ceo/api/breed/${dogBreed.toLowerCase()}/images/random",
+        "$hostName/api/breed/${dogBreed.toLowerCase()}/images/random",
         DBRequestMethod.GET);
 
     return responseFuture.then((response) {
@@ -89,26 +97,38 @@ class DBDogBreedsEnpoint implements DBDogBreedsEnpointInterface {
     });
   }
 
-  // Return an array with random images with selected breed.
-  Future<List<String>> getBreedRadomImagesUrl(String dogBreeds) async {
+  /// Return an radom image url for specific dog breed name.
+  ///
+  Future<String> getSubBreedRadomImageUrl(
+      String dogBreed, String subBreed) async {
     final responseFuture = _apiClient.makeRequest(
-        "https://dog.ceo/api/breed/$dogBreeds/images", DBRequestMethod.GET);
+        "$hostName/api/breed/${dogBreed.toLowerCase()}/${subBreed.toLowerCase()}/images/random",
+        DBRequestMethod.GET);
+
+    return responseFuture.then((response) {
+      var imageUrl = jsonDecode(response.body)["message"] as String;
+      print("Response: $imageUrl");
+      return Future<String>.value(imageUrl);
+    }).catchError((error) {
+      print('Fail to load image with error: $error');
+      return Future<String>.error(error);
+    });
+  }
+
+  /// Returns an array of all the images from a breed, e.g. 'hound'.
+  ///
+  Future<Map<String, List<DBDogSubBreedModel>>> getAllBreedRadomImagesUrlFor(
+      DBDogBreedModel dogBreed) async {
+    final responseFuture = _apiClient.makeRequest(
+        "$hostName${allBreedImagesPath(dogBreed.name)}", DBRequestMethod.GET);
 
     return responseFuture.then((response) {
       var imagesUrlList =
-          List<String>.from(jsonDecode(response.body)["messages"]);
-      return Future<List<String>>.value(imagesUrlList);
+          List<String>.from(jsonDecode(response.body)["message"]);
+
+      final subBreedsList = imagesUrlList.convertToSubBreedModels(
+          imageHostName, imagesUrlList, dogBreed);
+      return Future<Map<String, List<DBDogSubBreedModel>>>.value(subBreedsList);
     });
-
-    // var imagesUrlList = List<String>();
-    // responseFuture.then((response) {
-    //   imagesUrlList = List<String>.from(jsonDecode(response.body)["messages"]);
-    // });
-
-    // return imagesUrlList;
-  }
-
-  Future<String> getSubBreedRadomImage(String subBreeds) async {
-    return 'empty-url';
   }
 }

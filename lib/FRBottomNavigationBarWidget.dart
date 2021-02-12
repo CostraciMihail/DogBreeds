@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:DogBreeds/Screens/DBBreedsList/DBBreedsListScreen.dart';
-import 'package:DogBreeds/Screens/DBSubBreedsList/DBSubBreedsListScreen.dart';
 
 class FRBottomNavigationBarWidget extends StatefulWidget {
   FRBottomNavigationBarWidget({Key key}) : super(key: key);
@@ -22,7 +21,7 @@ class _FRBottomNavigationBarWidgetState
 
   List<Widget> tabBarScreens = [
     DBBreedsListScreen(),
-    DBSubBreedsListScreen(),
+    Container(),
     Center(child: Text("Favorites Sub Breeds Screen")),
   ];
 

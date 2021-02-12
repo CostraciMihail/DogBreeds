@@ -14,35 +14,40 @@ class DBBreedsListScreen extends StatefulWidget {
 
 class _DBBreedsListScreenState extends State<DBBreedsListScreen> {
   var _breedsCells = List<DBBreedsGridViewCell>();
-  var _isLoadingData = false;
 
-  @override
-  void initState() {
-    super.initState();
+  Future<List<DBBreedsGridViewCell>> createCells() async {
+    final allDogBreeds = await widget.viewModel.loadAllDogBreeds();
 
-    _isLoadingData = true;
-    widget.viewModel.loadAllDogBreeds().then((list) {
-      setState(() {
-        _breedsCells =
-            widget._breedsCellsFactory.makeBreedsCells(list, widget.viewModel);
-        _isLoadingData = false;
-      });
-    });
+    final dogBreedsList = widget._breedsCellsFactory
+        .makeBreedsCells(allDogBreeds, widget.viewModel);
+
+    _breedsCells = dogBreedsList;
+    return Future<List<DBBreedsGridViewCell>>.value(_breedsCells);
   }
 
   @override
   Widget build(context) {
     return Scaffold(
         appBar: AppBar(title: Text("Dog Breeds")),
-        body: _isLoadingData
-            ? Center(child: CircularProgressIndicator())
-            : GridView.count(
-                primary: false,
-                padding: const EdgeInsets.all(20),
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                crossAxisCount: 3,
-                children: _breedsCells,
-              ));
+        body: FutureBuilder(
+            future: createCells(),
+            builder: (BuildContext buildContext,
+                AsyncSnapshot<List<DBBreedsGridViewCell>> snapshot) {
+              if (snapshot.hasData) {
+                return GridView.count(
+                  primary: false,
+                  padding: const EdgeInsets.all(20),
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  crossAxisCount: 3,
+                  children: snapshot.data,
+                );
+              } else if (snapshot.hasError) {
+                print("Error: ${snapshot.error}");
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+              return Container();
+            }));
   }
 }

@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:DogBreeds/FRBottomNavigationBarWidget.dart';
+import 'package:provider/provider.dart';
+import 'package:DogBreeds/DBProviders.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (_) => ScreenState()),
+    ChangeNotifierProvider(create: (_) => DBFavoritesSubBredsProvider())
+  ], child: MyApp()));
+
+  // runApp(ChangeNotifierProvider(
+  //     create: (context) {
+  //       return ScreenState();
+  //     },
+  //     child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:provider/provider.dart';
 import 'package:DogBreeds/DBExtensions.dart';
 import 'package:DogBreeds/Screens/DBSubBreedsList/DBSubBreedsListViewModel.dart';
 import 'package:DogBreeds/Screens/DBBreedsList/CustomWidgets/DBBreedsGridViewCell.dart';
 import 'package:DogBreeds/Screens/DBBreedsList/CustomWidgets/DBBreedsGridViewCellFactory.dart';
+import 'package:DogBreeds/CustomWidgets/DBEditAppBar.dart';
+import 'package:DogBreeds/DBProviders.dart';
 
+///
+/// DBSubBreedsListScreen
+///
 class DBSubBreedsListScreen extends StatefulWidget {
   final _breedsCellsFactory = DBBreedsGridViewCellFactory();
   final DBSubBreedsListViewModel viewModel;
@@ -14,19 +21,23 @@ class DBSubBreedsListScreen extends StatefulWidget {
   _DBSubBreedsListScreenState createState() => _DBSubBreedsListScreenState();
 }
 
+///
+/// _DBSubBreedsListScreenState
+///
 class _DBSubBreedsListScreenState extends State<DBSubBreedsListScreen> {
   var _breedsCells = List<DBBreedsGridViewCell>();
 
-  Future<List<DBBreedsGridViewCell>> _loadData() async {
-    final subBreedslist = await widget.viewModel
-        .loadAllDogSubBreeds(widget.viewModel.dogBreed.name);
-
-    _breedsCells = widget._breedsCellsFactory
-        .makeSubBreedsCells(subBreedslist, widget.viewModel);
-
-    return Future<List<DBBreedsGridViewCell>>.value(_breedsCells);
+  @override
+  Widget build(context) {
+    return Scaffold(
+        appBar: DBEditAppBar("Sub Breeds",
+            onSaveTapHandler: () => saveAppBarTapped(context)),
+        body: _futureBuilder());
   }
 
+  ///
+  /// Loading Data
+  ///
   Widget _futureBuilder() {
     return Stack(alignment: AlignmentDirectional.topCenter, children: [
       Text(
@@ -59,9 +70,20 @@ class _DBSubBreedsListScreenState extends State<DBSubBreedsListScreen> {
     ]);
   }
 
-  @override
-  Widget build(context) {
-    return Scaffold(
-        appBar: AppBar(title: Text("Sub Breeds")), body: _futureBuilder());
+  //
+  // Acitons
+  Future<List<DBBreedsGridViewCell>> _loadData() async {
+    final subBreedslist =
+        await widget.viewModel.loadAllDogSubBreeds(widget.viewModel.dogBreed);
+
+    _breedsCells = widget._breedsCellsFactory
+        .makeSubBreedsCells(subBreedslist, widget.viewModel);
+
+    return Future<List<DBBreedsGridViewCell>>.value(_breedsCells);
+  }
+
+  void saveAppBarTapped(BuildContext context) {
+    widget.viewModel.saveFavoritesSubBreeds();
+    context.read<DBFavoritesSubBredsProvider>().favoriteList = [];
   }
 }

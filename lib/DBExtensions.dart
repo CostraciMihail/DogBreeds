@@ -59,34 +59,13 @@ extension DBDogSubBreedListUrls on List<String> {
 
     return mapOfArrays;
   }
+}
 
-  // List<List<DBDogSubBreedModel>> convertToSubBreedModels(
-  //     String imageHostName, List<String> urls, DBDogBreedModel dogBreed) {
-  //   //
-  //   // Example of one returned url.
-  //   // "https://images.dog.ceo/breeds/hound-blood/n02088466_3568.jpg"
-  //   final trimPattern = imageHostName + "/breeds/${dogBreed.name}-";
-  //   var arraOfArrays = List<List<DBDogSubBreedModel>>();
+extension BoolHelpers on bool {
+  int toInt() => this ? 1 : 0;
+}
 
-  //   urls.forEach((imageUrl) {
-  //     final trimmedStr = imageUrl.replaceAll(trimPattern, '');
-  //     var subBreedName = trimmedStr.split('/').first;
-
-  //     if (subBreedName != null) {
-  //       final newSubBreed =
-  //           DBDogSubBreedModel(name: subBreedName, imageUrl: imageUrl);
-  //       final tmpSubBreedList = [newSubBreed];
-
-  //       final indexOfSubBreedList =
-  //           arraOfArrays.getIndexOfSubBreedList(tmpSubBreedList);
-
-  //       if (indexOfSubBreedList >= 0)
-  //         arraOfArrays[indexOfSubBreedList].insert(0, newSubBreed);
-  //       else
-  //         arraOfArrays.insert(0, tmpSubBreedList);
-  //     }
-  //   });
-
-  //   return arraOfArrays;
-  // }
+extension IntHelpers on int {
+  bool toBool() => this == 0 ? false : true;
+  bool inttoBool(int a) => a == 0 ? false : true;
 }

@@ -10,8 +10,8 @@ class DBClientAPI {
       {Map<String, dynamic> headers}) async {
     http.Response response;
 
-    print('\n*** Request url: $url');
-    print('Method: ${requestMethod.toString()}');
+    // print('\n*** Request url: $url');
+    // print('Method: ${requestMethod.toString()}');
 
     switch (requestMethod) {
       case DBRequestMethod.GET:
@@ -24,12 +24,12 @@ class DBClientAPI {
         break;
     }
 
-    print('\n*** Response url: $url');
-    print('Method: ${requestMethod.toString()}');
-    print('Status code: ${response.statusCode}');
+    // print('\n*** Response url: $url');
+    // print('Method: ${requestMethod.toString()}');
+    // print('Status code: ${response.statusCode}');
 
     if (response.statusCode >= 200 && response.statusCode <= 300) {
-      print("Body: ${jsonDecode(response.body)}");
+      // print("Body: ${jsonDecode(response.body)}");
       return response;
     } else {
       throw Exception('$response');
@@ -39,7 +39,7 @@ class DBClientAPI {
 
 abstract class DBDogBreedsEnpointInterface {
   Future<List<DBDogBreedModel>> getAllDogBreeds();
-  Future<DBDogBreedModel> getAllDogSubBreeds(String dogBreed);
+  Future<DBDogBreedModel> getAllDogSubBreeds(DBDogBreedModel dogBreed);
   Future<String> getBreedRadomImageUrl(String dogBreed);
   Future<String> getSubBreedRadomImageUrl(String dogBreed, String subBreed);
   Future<Map<String, List<DBDogSubBreedModel>>> getAllBreedRadomImagesUrlFor(
@@ -68,16 +68,18 @@ class DBDogBreedsEnpoint implements DBDogBreedsEnpointInterface {
     });
   }
 
-  Future<DBDogBreedModel> getAllDogSubBreeds(String dogBreed) async {
+  Future<DBDogBreedModel> getAllDogSubBreeds(DBDogBreedModel dogBreed) async {
     final responseFuture = _apiClient.makeRequest(
-        "$hostName/api/breed/$dogBreed/list", DBRequestMethod.GET);
+        "$hostName/api/breed/${dogBreed.name}/list", DBRequestMethod.GET);
 
     return responseFuture.then((response) {
       final dogSubBreedsList =
           List<String>.from(jsonDecode(response.body)["message"]);
 
       return Future<DBDogBreedModel>.value(DBDogBreedModel(
-          name: dogBreed, subBreeds: dogSubBreedsList.toListOfDogSubBreeds()));
+          name: dogBreed.name,
+          subBreeds: dogSubBreedsList.toListOfDogSubBreeds(
+              dogBreed: dogBreed.name, dogBreedIndex: dogBreed.id)));
     });
   }
 
@@ -89,10 +91,10 @@ class DBDogBreedsEnpoint implements DBDogBreedsEnpointInterface {
 
     return responseFuture.then((response) {
       var imageUrl = jsonDecode(response.body)["message"] as String;
-      print("Response: $imageUrl");
+      // print("Response: $imageUrl");
       return Future<String>.value(imageUrl);
     }).catchError((error) {
-      print('Fail to load image with error: $error');
+      // print('Fail to load image with error: $error');
       return Future<String>.error(error);
     });
   }
@@ -107,10 +109,10 @@ class DBDogBreedsEnpoint implements DBDogBreedsEnpointInterface {
 
     return responseFuture.then((response) {
       var imageUrl = jsonDecode(response.body)["message"] as String;
-      print("Response: $imageUrl");
+      // print("Response: $imageUrl");
       return Future<String>.value(imageUrl);
     }).catchError((error) {
-      print('Fail to load image with error: $error');
+      // print('Fail to load image with error: $error');
       return Future<String>.error(error);
     });
   }

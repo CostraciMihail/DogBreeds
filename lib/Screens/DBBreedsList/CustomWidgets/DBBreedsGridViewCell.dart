@@ -37,78 +37,81 @@ class _DBBreedsGridViewCellState extends State<DBBreedsGridViewCell> {
   bool _isSelected;
   final _endpoint = DBDogBreedsEnpoint();
 
-  @override
-  void initState() {
-    super.initState();
-    if (widget.isSubDogBreedType) {
-      setState(() {
-        _isSelected = widget.dogSubBreed.isFavorite;
-      });
-    }
-  }
+  static const _titleTextStyle =
+      TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600);
+
+  final _clipedPlaceholder = ClipRRect(
+      borderRadius: BorderRadius.circular(15.0),
+      child: Image(
+          fit: BoxFit.cover,
+          image: AssetImage('images/placeholder-image.png')));
 
   Widget get _imageWidget {
-    return Container(
+    return SizedBox(
+        width: double.infinity,
+        height: double.infinity,
         child: FutureBuilder(
-      future: _loadImage(),
-      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-        _imageUrl = snapshot.data;
+          future: _loadImage(),
+          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+            _imageUrl = snapshot.data;
 
-        if (snapshot.hasData) {
-          return CachedNetworkImage(
-            useOldImageOnUrlChange: true,
-            placeholder: (context, url) =>
-                Image(image: AssetImage('images/placeholder-image.png')),
-            imageUrl: _imageUrl,
-          );
-        } else if (snapshot.hasError) {
-          return Icon(Icons.warning_amber_rounded);
-        } else {
-          return Image(image: AssetImage('images/placeholder-image.png'));
-        }
-      },
-    ));
+            if (snapshot.hasData) {
+              return CachedNetworkImage(
+                fit: BoxFit.cover,
+                useOldImageOnUrlChange: true,
+                placeholder: (context, url) => SizedBox(
+                    width: double.infinity,
+                    height: double.infinity,
+                    child: _clipedPlaceholder),
+                imageUrl: _imageUrl,
+              );
+            } else {
+              return SizedBox(
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: _clipedPlaceholder);
+            }
+          },
+        ));
   }
 
   Widget get _titleWidget {
-    return Container(
-        alignment: AlignmentDirectional.bottomCenter,
+    return SizedBox(
         child: widget.isSubDogBreedType
-            ? Text(widget.dogSubBreed.name.capitalize())
-            : Text(widget.dogBreed.name.capitalize()));
+            ? Text(
+                widget.dogSubBreed.name.capitalize(),
+                style: _titleTextStyle,
+                maxLines: 2,
+                overflow: TextOverflow.clip,
+              )
+            : Text(widget.dogBreed.name.capitalize(),
+                textAlign: TextAlign.center, style: _titleTextStyle));
   }
 
+  // Initialization
+  //
+  @override
+  void initState() {
+    super.initState();
+    markAsSelectedOrNot();
+  }
+
+  // Build
+  //
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        child: Container(
-          width: 100,
-          height: 100,
-          alignment: Alignment.topCenter,
-          child: Column(children: [
-            overlaySlectionWidget(),
-            Expanded(
-                child: FittedBox(
-                    fit: BoxFit.fitWidth,
-                    alignment: Alignment.topCenter,
-                    child: _imageWidget)),
-            _titleWidget
-          ]),
-        ),
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(15.0),
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: [_imageWidget, _titleWidget],
+            )),
         onTap: () => performTapAction());
   }
 
-  void performTapAction() {
-    if (_isEditMode && widget.isSubDogBreedType) {
-      setState(() => _isSelected = !_isSelected);
-      widget.dogSubBreed.isFavorite = _isSelected;
-      widget.onSelectionAction(
-          widget.dogBreed, widget.dogSubBreed, _isSelected);
-    } else {
-      widget.onTapAction(context, widget.dogBreed, widget.dogSubBreed);
-    }
-  }
-
+  // UI SetUp
+  //
   Widget overlaySlectionWidget() {
     return Consumer<ScreenState>(builder: (context, screenState, _) {
       _isEditMode = screenState.isEditMode;
@@ -139,7 +142,20 @@ class _DBBreedsGridViewCellState extends State<DBBreedsGridViewCell> {
     });
   }
 
-  // Helpers
+  // Actions
+  //
+  void performTapAction() {
+    if (_isEditMode && widget.isSubDogBreedType) {
+      setState(() => _isSelected = !_isSelected);
+      widget.dogSubBreed.isFavorite = _isSelected;
+      widget.onSelectionAction(
+          widget.dogBreed, widget.dogSubBreed, _isSelected);
+    } else {
+      widget.onTapAction(context, widget.dogBreed, widget.dogSubBreed);
+    }
+  }
+
+  // Loading Data
   //
   Future<String> _loadImage() {
     return widget.isSubDogBreedType
@@ -169,5 +185,15 @@ class _DBBreedsGridViewCellState extends State<DBBreedsGridViewCell> {
     }).catchError((error) {
       return Future<String>.error(error);
     });
+  }
+
+  // Helpers
+  //
+  void markAsSelectedOrNot() {
+    if (widget.isSubDogBreedType) {
+      setState(() {
+        _isSelected = widget.dogSubBreed.isFavorite;
+      });
+    }
   }
 }

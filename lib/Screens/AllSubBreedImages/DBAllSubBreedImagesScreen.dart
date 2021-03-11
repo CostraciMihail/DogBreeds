@@ -34,6 +34,8 @@ class _DBAllSubBreedImagesScreenState extends State<DBAllSubBreedImagesScreen> {
   }
 
   void _loadNextSubBreedImage() {
+    if (currentIndexOfSubBreed == widget.dogBreed.subBreeds.length - 1) return;
+
     setState(() {
       currentIndexOfSubBreed += 1;
       currentSubBreedImageUrl =

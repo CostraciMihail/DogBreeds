@@ -16,13 +16,11 @@ class _FRBottomNavigationBarWidgetState
   var _selectedTabBarIndex = 0;
   List<BottomNavigationBarItem> tabBarItems = [
     BottomNavigationBarItem(icon: Icon(Icons.list), label: "Dog Breeds"),
-    // BottomNavigationBarItem(icon: Icon(Icons.list), label: "Sub Breeds"),
     BottomNavigationBarItem(icon: Icon(Icons.star), label: "Favorites"),
   ];
 
   List<Widget> tabBarScreens = [
     DBBreedsListScreen(),
-    // Container(),
     DBFavoritesSubBreedsScreen(),
   ];
 

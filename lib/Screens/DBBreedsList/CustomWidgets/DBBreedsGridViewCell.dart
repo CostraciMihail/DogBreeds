@@ -105,7 +105,7 @@ class _DBBreedsGridViewCellState extends State<DBBreedsGridViewCell> {
             borderRadius: BorderRadius.circular(15.0),
             child: Stack(
               alignment: Alignment.bottomCenter,
-              children: [_imageWidget, _titleWidget],
+              children: [_imageWidget, _titleWidget, overlaySlectionWidget()],
             )),
         onTap: () => performTapAction());
   }
@@ -117,29 +117,27 @@ class _DBBreedsGridViewCellState extends State<DBBreedsGridViewCell> {
       _isEditMode = screenState.isEditMode;
 
       if (_isEditMode && widget.isSubDogBreedType) {
-        return Container(
-          alignment: Alignment.topRight,
-          child: Container(
-              width: 15,
-              height: 15,
-              decoration: BoxDecoration(
-                  color: _isSelected ? Colors.orange : Colors.grey[600],
-                  shape: BoxShape.circle)),
-        );
+        return circleWidget();
       } else if (widget.isSubDogBreedType && _isSelected) {
-        return Container(
-          alignment: Alignment.topRight,
-          child: Container(
-              width: 15,
-              height: 15,
-              decoration: BoxDecoration(
-                  color: _isSelected ? Colors.orange : Colors.grey[600],
-                  shape: BoxShape.circle)),
-        );
+        return circleWidget();
       } else {
         return Container();
       }
     });
+  }
+
+  Widget circleWidget() {
+    return Padding(
+        padding: EdgeInsets.only(right: 7, top: 7),
+        child: Container(
+          alignment: Alignment.topRight,
+          child: Container(
+              width: 15,
+              height: 15,
+              decoration: BoxDecoration(
+                  color: _isSelected ? Colors.orange : Colors.grey[600],
+                  shape: BoxShape.circle)),
+        ));
   }
 
   // Actions

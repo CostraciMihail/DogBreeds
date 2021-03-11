@@ -41,7 +41,11 @@ class DBBreedsGridViewCellFactory {
         allowTapAction: false,
         onTapAction: (context, dogBreed, selectedSubBreed) {
           var tmpDogBreed = dogBreed;
-          tmpDogBreed.subBreeds = viewModel.allSubBreeds[selectedSubBreed.name];
+          final allSubBreeds = viewModel.allSubBreeds[selectedSubBreed.name];
+
+          if (allSubBreeds == null || allSubBreeds.isEmpty) return;
+
+          tmpDogBreed.subBreeds = allSubBreeds;
 
           Navigator.push(
               context,

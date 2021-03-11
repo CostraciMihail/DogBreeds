@@ -1,7 +1,7 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:DogBreeds/DBDogBreedModel.dart';
-import 'package:DogBreeds/DBExtensions.dart';
 
 enum DBRequestMethod { GET, POST }
 
@@ -121,16 +121,51 @@ class DBDogBreedsEnpoint implements DBDogBreedsEnpointInterface {
   ///
   Future<Map<String, List<DBDogSubBreedModel>>> getAllBreedRadomImagesUrlFor(
       DBDogBreedModel dogBreed) async {
-    final responseFuture = _apiClient.makeRequest(
-        "$hostName${allBreedImagesPath(dogBreed.name)}", DBRequestMethod.GET);
+    final Map<String, Object> parameters = {"dogBreed": dogBreed};
 
-    return responseFuture.then((response) {
-      var imagesUrlList =
-          List<String>.from(jsonDecode(response.body)["message"]);
-
-      final subBreedsList = imagesUrlList.convertToSubBreedModels(
-          imageHostName, imagesUrlList, dogBreed);
-      return Future<Map<String, List<DBDogSubBreedModel>>>.value(subBreedsList);
-    });
+    return compute(convertToSubBreedModels, dogBreed);
   }
+}
+
+///
+/// Keys for [arguments] Map are:'imageHostName', 'urls', 'dogBreed'
+///
+Future<Map<String, List<DBDogSubBreedModel>>> convertToSubBreedModels(
+    DBDogBreedModel dogBreed) async {
+  final _apiClient = DBClientAPI();
+  String imageHostName = DBDogBreedsEnpoint.imageHostName;
+
+  final response = await _apiClient.makeRequest(
+      "${DBDogBreedsEnpoint.hostName}${DBDogBreedsEnpoint.allBreedImagesPath(dogBreed.name)}",
+      DBRequestMethod.GET);
+  var urls = List<String>.from(jsonDecode(response.body)["message"]);
+
+  //
+  // Example of one returned url.
+  // "https://images.dog.ceo/breeds/hound-blood/n02088466_3568.jpg"
+  final trimPattern = imageHostName + "/breeds/${dogBreed.name}-";
+  var mapOfArrays = Map<String, List<DBDogSubBreedModel>>();
+
+  if (urls == null ||
+      urls.isEmpty && imageHostName == null && dogBreed.name == null)
+    return mapOfArrays;
+
+  urls.forEach((imageUrl) {
+    final trimmedStr = imageUrl.replaceAll(trimPattern, '');
+    var subBreedName = trimmedStr.split('/').first;
+
+    if (subBreedName != null) {
+      final newSubBreed =
+          DBDogSubBreedModel(name: subBreedName, imageUrl: imageUrl);
+      final tmpSubBreedList = [newSubBreed];
+      var existingArray = mapOfArrays[newSubBreed.name];
+
+      if (existingArray != null)
+        existingArray.insert(0, newSubBreed);
+      else
+        mapOfArrays[subBreedName] = tmpSubBreedList;
+    }
+  });
+
+  return mapOfArrays;
 }

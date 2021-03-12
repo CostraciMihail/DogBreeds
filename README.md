@@ -1,16 +1,19 @@
 # DogBreeds
+___
+## Project Description
 
-A new Flutter project.
+DogBreeds projects is a Flutter project which creates iOS and Android app.
+The main purpose of the app is to explore all Dob Breeds and Dog Sub Breeds.
+All data is using from open source dog pictures from www.dog.ceo.
 
-## Getting Started
+## Scope of this project
+This project is build as Demo project during learning of Flutter Technology.
+___
+## App Screenshots
+### iOS
 
-This project is a starting point for a Flutter application.
+![](Screenshots/iOS/AllDogBreeds-Screen-iOS.png) ![](Screenshots/iOS/ViewAllImagesOfDogSubBreed-Screen-iOS.png) ![](Screenshots/iOS/FavoritesDogSubBreeds-Screen-iOS.png) ![](Screenshots/iOS/AllDogSubBreeds-FavoriteSelection-Screen-iOS.png) ![](Screenshots/iOS/AllDogSubBreeds-Screen-iOS.png)
 
-A few resources to get you started if this is your first Flutter project:
+### Android
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![](Screenshots/Android/AllDogBreeds-Screen-Android.png) ![](Screenshots/Android/ViewAllImagesOfDogSubBreed-Screen-Android.png) ![](Screenshots/Android/FavoritesDogSubBreeds-Screen-Android.png) ![](Screenshots/Android/AllDogSubBreeds-FavoriteSelection-Screen-Android.png) ![](Screenshots/Android/AllDogSubBreeds-Screen-Android.png)

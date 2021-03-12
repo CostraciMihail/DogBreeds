@@ -12,7 +12,7 @@ class FRBottomNavigationBarWidget extends StatefulWidget {
 
 class _FRBottomNavigationBarWidgetState
     extends State<FRBottomNavigationBarWidget> {
-  List<String> elements = List<String>();
+  List<String> elements = [];
   var _selectedTabBarIndex = 0;
   List<BottomNavigationBarItem> tabBarItems = [
     BottomNavigationBarItem(icon: Icon(Icons.list), label: "Dog Breeds"),

@@ -6,7 +6,8 @@ import 'package:DogBreeds/DBDogBreedModel.dart';
 enum DBRequestMethod { GET, POST }
 
 class DBClientAPI {
-  Future<http.Response> makeRequest(String url, DBRequestMethod requestMethod,
+  Future<http.Response> makeRequest(
+      String host, String path, DBRequestMethod requestMethod,
       {Map<String, dynamic> headers}) async {
     http.Response response;
 
@@ -15,12 +16,12 @@ class DBClientAPI {
 
     switch (requestMethod) {
       case DBRequestMethod.GET:
-        response = await http.get(url);
+        response = await http.get(Uri.https(host, path));
         break;
 
       case DBRequestMethod.POST:
         // todo: add params
-        response = await http.post(url);
+        response = await http.post(Uri.https(host, path));
         break;
     }
 
@@ -49,7 +50,7 @@ abstract class DBDogBreedsEnpointInterface {
 class DBDogBreedsEnpoint implements DBDogBreedsEnpointInterface {
   DBClientAPI _apiClient;
 
-  static String hostName = 'https://dog.ceo';
+  static String hostName = 'dog.ceo';
   static String imageHostName = 'https://images.dog.ceo';
   static String allBreedImagesPath(String dogBreed) {
     return '/api/breed/$dogBreed/images';
@@ -59,7 +60,7 @@ class DBDogBreedsEnpoint implements DBDogBreedsEnpointInterface {
 
   Future<List<DBDogBreedModel>> getAllDogBreeds() async {
     final responseFuture = _apiClient.makeRequest(
-        "$hostName/api/breeds/list/all", DBRequestMethod.GET);
+        hostName, "/api/breeds/list/all", DBRequestMethod.GET);
 
     return responseFuture.then((response) {
       var dogBreedsList =
@@ -70,7 +71,7 @@ class DBDogBreedsEnpoint implements DBDogBreedsEnpointInterface {
 
   Future<DBDogBreedModel> getAllDogSubBreeds(DBDogBreedModel dogBreed) async {
     final responseFuture = _apiClient.makeRequest(
-        "$hostName/api/breed/${dogBreed.name}/list", DBRequestMethod.GET);
+        hostName, "/api/breed/${dogBreed.name}/list", DBRequestMethod.GET);
 
     return responseFuture.then((response) {
       final dogSubBreedsList =
@@ -86,7 +87,8 @@ class DBDogBreedsEnpoint implements DBDogBreedsEnpointInterface {
   // Return an radom image url for specific dog breed name.
   Future<String> getBreedRadomImageUrl(String dogBreed) async {
     final responseFuture = _apiClient.makeRequest(
-        "$hostName/api/breed/${dogBreed.toLowerCase()}/images/random",
+        hostName,
+        "/api/breed/${dogBreed.toLowerCase()}/images/random",
         DBRequestMethod.GET);
 
     return responseFuture.then((response) {
@@ -104,7 +106,8 @@ class DBDogBreedsEnpoint implements DBDogBreedsEnpointInterface {
   Future<String> getSubBreedRadomImageUrl(
       String dogBreed, String subBreed) async {
     final responseFuture = _apiClient.makeRequest(
-        "$hostName/api/breed/${dogBreed.toLowerCase()}/${subBreed.toLowerCase()}/images/random",
+        hostName,
+        "/api/breed/${dogBreed.toLowerCase()}/${subBreed.toLowerCase()}/images/random",
         DBRequestMethod.GET);
 
     return responseFuture.then((response) {
@@ -121,22 +124,22 @@ class DBDogBreedsEnpoint implements DBDogBreedsEnpointInterface {
   ///
   Future<Map<String, List<DBDogSubBreedModel>>> getAllBreedRadomImagesUrlFor(
       DBDogBreedModel dogBreed) async {
-    final Map<String, Object> parameters = {"dogBreed": dogBreed};
-
-    return compute(convertToSubBreedModels, dogBreed);
+    return compute(getAllDogSubBreedsWithImages, dogBreed);
   }
 }
 
 ///
+/// Make request and get all images for specified Dog Breed.
 /// Keys for [arguments] Map are:'imageHostName', 'urls', 'dogBreed'
 ///
-Future<Map<String, List<DBDogSubBreedModel>>> convertToSubBreedModels(
+Future<Map<String, List<DBDogSubBreedModel>>> getAllDogSubBreedsWithImages(
     DBDogBreedModel dogBreed) async {
   final _apiClient = DBClientAPI();
   String imageHostName = DBDogBreedsEnpoint.imageHostName;
 
   final response = await _apiClient.makeRequest(
-      "${DBDogBreedsEnpoint.hostName}${DBDogBreedsEnpoint.allBreedImagesPath(dogBreed.name)}",
+      DBDogBreedsEnpoint.hostName,
+      "${DBDogBreedsEnpoint.allBreedImagesPath(dogBreed.name)}",
       DBRequestMethod.GET);
   var urls = List<String>.from(jsonDecode(response.body)["message"]);
 

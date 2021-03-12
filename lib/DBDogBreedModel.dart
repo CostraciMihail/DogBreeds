@@ -100,7 +100,7 @@ extension DBDogSubBreedList on List<String> {
   /// an [List<DBDogSubBreedModel>].
   List<DBDogSubBreedModel> toListOfDogSubBreeds(
       {@required String dogBreed, @required int dogBreedIndex}) {
-    var array = List<DBDogSubBreedModel>();
+    List<DBDogSubBreedModel> array = [];
     int index = dogBreedIndex * 10;
     this.forEach((name) {
       array.add(DBDogSubBreedModel(id: index, name: name, dogBreed: dogBreed));
@@ -119,7 +119,7 @@ class DBDogBreedsListModel {
 
   factory DBDogBreedsListModel.fromJson(Map<String, dynamic> json) {
     final Map<String, dynamic> listJson = json['message'];
-    var array = List<DBDogBreedModel>();
+    List<DBDogBreedModel> array = [];
 
     int index = 0;
     listJson.forEach((key, value) {

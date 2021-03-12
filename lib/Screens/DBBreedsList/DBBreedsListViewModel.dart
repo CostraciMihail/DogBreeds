@@ -2,7 +2,7 @@ import 'package:DogBreeds/DBDogBreedModel.dart';
 import 'package:DogBreeds/DBDogBreedsEnpoint.dart';
 
 class DBBreedsListViewModel {
-  var _allDogBreeds = List<DBDogBreedModel>();
+  List<DBDogBreedModel> _allDogBreeds = [];
   DBDogBreedsEnpointInterface dogBreedsEnpoint;
 
   DBBreedsListViewModel({DBDogBreedsEnpointInterface dogBreedsEnpoint})
@@ -22,7 +22,7 @@ class DBBreedsListViewModel {
 
   // Mock
   Future<List<DBDogBreedModel>> loadAllDogBreedsMocks() async {
-    var mockArray = List<DBDogBreedModel>();
+    List<DBDogBreedModel> mockArray = [];
 
     await Future.delayed(Duration(seconds: 1, milliseconds: 500), () {
       for (int i = 0; i < 300; i++) {

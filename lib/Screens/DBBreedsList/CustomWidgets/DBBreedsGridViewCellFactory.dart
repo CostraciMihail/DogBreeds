@@ -12,7 +12,7 @@ import 'package:DogBreeds/Screens/FavoritesSubBreeds/CustomWidgets/DBFavoritesBr
 class DBBreedsGridViewCellFactory {
   List<DBBreedsGridViewCell> makeBreedsCells(
       List<DBDogBreedModel> dogBreeds, DBBreedsListViewModel viewModel) {
-    var cells = List<DBBreedsGridViewCell>();
+    List<DBBreedsGridViewCell> cells = [];
 
     for (var dogBreed in dogBreeds) {
       var cell = DBBreedsGridViewCell(dogBreed, null,
@@ -32,7 +32,7 @@ class DBBreedsGridViewCellFactory {
 
   List<DBBreedsGridViewCell> makeSubBreedsCells(
       DBDogBreedModel dogBreed, DBSubBreedsListViewModel viewModel) {
-    var cells = List<DBBreedsGridViewCell>();
+    List<DBBreedsGridViewCell> cells = [];
 
     for (var subBreed in dogBreed.subBreeds) {
       var cell = DBBreedsGridViewCell(
@@ -69,7 +69,7 @@ class DBBreedsGridViewCellFactory {
       Function(DBDogBreedModel, DBDogSubBreedModel, bool) onSelectionAction) {
     if (subBreeds == null) return [];
 
-    var cells = List<DBFavoritesBreedsCellWidget>();
+    List<DBFavoritesBreedsCellWidget> cells = [];
     subBreeds.forEach((subBreed) {
       cells.add(DBFavoritesBreedsCellWidget(
         subBreed,

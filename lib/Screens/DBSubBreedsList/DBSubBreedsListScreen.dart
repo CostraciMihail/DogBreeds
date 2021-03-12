@@ -25,7 +25,7 @@ class DBSubBreedsListScreen extends StatefulWidget {
 /// _DBSubBreedsListScreenState
 ///
 class _DBSubBreedsListScreenState extends State<DBSubBreedsListScreen> {
-  var _breedsCells = List<DBBreedsGridViewCell>();
+  List<DBBreedsGridViewCell> _breedsCells = [];
 
   @override
   Widget build(context) {

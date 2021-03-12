@@ -79,7 +79,7 @@ class DBSubBreedsListViewModel {
 
   // Mock
   Future<List<DBDogBreedModel>> loadAllDogSubBreedsMocks() async {
-    var mockArray = List<DBDogBreedModel>();
+    List<DBDogBreedModel> mockArray = [];
 
     await Future.delayed(Duration(seconds: 1, milliseconds: 500), () {
       for (int i = 0; i < 30; i++) {

@@ -14,7 +14,7 @@ class DBBreedsListScreen extends StatefulWidget {
 }
 
 class _DBBreedsListScreenState extends State<DBBreedsListScreen> {
-  var _breedsCells = List<DBBreedsGridViewCell>();
+  List<DBBreedsGridViewCell> _breedsCells = [];
 
   Future<List<DBBreedsGridViewCell>> createCells() async {
     final allDogBreeds = await widget.viewModel.loadAllDogBreeds();

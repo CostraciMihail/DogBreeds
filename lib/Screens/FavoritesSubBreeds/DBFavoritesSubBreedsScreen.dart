@@ -21,7 +21,7 @@ class DBFavoritesSubBreedsScreen extends StatefulWidget {
 
 class _DBFavoritesSubBreedsScreenState
     extends State<DBFavoritesSubBreedsScreen> {
-  var _favoritesBreedsCells = List<DBFavoritesBreedsCellWidget>();
+  List<DBFavoritesBreedsCellWidget> _favoritesBreedsCells = [];
 
   @override
   Widget build(context) {

@@ -18,6 +18,11 @@
 		76DC22DD260399B600311384 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		76DC22E1260399C500311384 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		76DC22E5260399D400311384 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
+		76DC23722603B1D300311384 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 76DC236C2603B1D200311384 /* Assets.xcassets */; };
+		76DC23742603B1D300311384 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 76DC236E2603B1D300311384 /* LaunchScreen.storyboard */; };
+		76DC23752603B1D300311384 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 76DC236F2603B1D300311384 /* Main.storyboard */; };
+		76DC23762603B1D300311384 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76DC23702603B1D300311384 /* SceneDelegate.swift */; };
+		76DC23772603B1D300311384 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76DC23712603B1D300311384 /* ViewController.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -95,6 +100,12 @@
 		76DC22B32603981700311384 /* RunnerAppClipUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerAppClipUITests.swift; sourceTree = "<group>"; };
 		76DC22B52603981800311384 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		76DC232B2603A14000311384 /* Runner.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
+		76DC236C2603B1D200311384 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		76DC236D2603B1D300311384 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		76DC236E2603B1D300311384 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		76DC236F2603B1D300311384 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		76DC23702603B1D300311384 /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		76DC23712603B1D300311384 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
@@ -157,6 +168,12 @@
 		76DC228F2603981300311384 /* RunnerAppClip */ = {
 			isa = PBXGroup;
 			children = (
+				76DC236D2603B1D300311384 /* AppDelegate.swift */,
+				76DC23702603B1D300311384 /* SceneDelegate.swift */,
+				76DC23712603B1D300311384 /* ViewController.swift */,
+				76DC236F2603B1D300311384 /* Main.storyboard */,
+				76DC236E2603B1D300311384 /* LaunchScreen.storyboard */,
+				76DC236C2603B1D200311384 /* Assets.xcassets */,
 				76DC229E2603981700311384 /* Info.plist */,
 				76DC229F2603981700311384 /* RunnerAppClip.entitlements */,
 			);
@@ -381,6 +398,9 @@
 			files = (
 				76DC22DD260399B600311384 /* LaunchScreen.storyboard in Resources */,
 				76DC22D9260399B100311384 /* Assets.xcassets in Resources */,
+				76DC23722603B1D300311384 /* Assets.xcassets in Resources */,
+				76DC23752603B1D300311384 /* Main.storyboard in Resources */,
+				76DC23742603B1D300311384 /* LaunchScreen.storyboard in Resources */,
 				76DC22D5260399A300311384 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -560,8 +580,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				76DC23772603B1D300311384 /* ViewController.swift in Sources */,
 				76DC22E1260399C500311384 /* AppDelegate.swift in Sources */,
 				76DC22E5260399D400311384 /* GeneratedPluginRegistrant.m in Sources */,
+				76DC23762603B1D300311384 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -736,7 +758,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.DogBreeds.Clip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG APPCLIP";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -772,6 +794,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.DogBreeds.Clip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = APPCLIP;
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				SYSTEM_FRAMEWORK_SEARCH_PATHS = (
@@ -806,6 +829,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.DogBreeds.Clip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = APPCLIP;
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				SYSTEM_FRAMEWORK_SEARCH_PATHS = (

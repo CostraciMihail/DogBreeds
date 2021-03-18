@@ -1,3 +1,6 @@
+import 'package:DogBreeds/Screens/AllSubBreedImages/DBAllSubBreedImagesScreen.dart';
+import 'package:DogBreeds/Screens/DBBreedsList/DBBreedsListScreen.dart';
+import 'package:DogBreeds/Screens/DBSubBreedsList/DBSubBreedsListScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:DogBreeds/FRBottomNavigationBarWidget.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +18,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      routes: {
+        '/main-screen': (context) => DBBreedsListScreen(),
+        '/sub-breeds-screen': (context) => DBSubBreedsListScreen(),
+      },
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,

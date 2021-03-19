@@ -1,30 +1,34 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility that Flutter provides. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+@Timeout(Duration(seconds: 3))
 
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:DogBreeds/main.dart';
+import 'package:test/test.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+  // Init ffi loader if needed.
+  sqfliteFfiInit();
+  // Examp of Unit Test for SQLite
+  test('MyUnitTest', () async {
+    var factory = databaseFactoryFfi;
+    var db = await factory.openDatabase(inMemoryDatabasePath);
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Should fail table does not exists
+    try {
+      await db.query('Test');
+    } on DatabaseException catch (e) {
+      // no such table: Test
+      expect(e.isNoSuchTableError('Test'), isTrue);
+      print(e.toString());
+    }
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Ok
+    await db.execute('CREATE TABLE Test (id INTEGER PRIMARY KEY)');
+    await db.execute('ALTER TABLE Test ADD COLUMN name TEXT');
+    // should succeed, but empty
+    expect(await db.query('Test'), []);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    await db.close();
   });
 }

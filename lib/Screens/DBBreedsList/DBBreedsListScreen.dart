@@ -5,9 +5,11 @@ import 'package:DogBreeds/Screens/DBBreedsList/CustomWidgets/DBBreedsGridViewCel
 
 class DBBreedsListScreen extends StatefulWidget {
   final _breedsCellsFactory = DBBreedsGridViewCellFactory();
-  final viewModel = DBBreedsListViewModel();
+  final DBBreedsListViewModel viewModel;
 
-  DBBreedsListScreen({Key key}) : super(key: key);
+  DBBreedsListScreen({Key key, DBBreedsListViewModel viewModel})
+      : viewModel = viewModel ?? DBBreedsListViewModel(),
+        super(key: key);
 
   @override
   _DBBreedsListScreenState createState() => _DBBreedsListScreenState();

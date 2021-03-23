@@ -13,8 +13,6 @@ class DBSubBreedsListViewModel {
   DBSubBreedsListViewModel(this.dogBreed,
       {DBDogBreedsEnpointInterface dogBreedsEnpoint, this.isEditMode = false})
       : dogBreedsEnpoint = dogBreedsEnpoint ?? DBDogBreedsEnpoint() {
-    // TODO: add links to dogSubBreedImage object.
-    //       Make this operation in background on separated thread.
     getAllBreedImages().then((subBreedsWithImageUrls) {
       allSubBreeds = subBreedsWithImageUrls;
     });

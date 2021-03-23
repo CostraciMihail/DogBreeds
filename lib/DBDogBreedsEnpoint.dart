@@ -1,44 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 import 'package:DogBreeds/DBDogBreedModel.dart';
-
-enum DBRequestMethod { GET, POST }
-
-class DBClientAPI {
-  Future<http.Response> makeRequest(
-      String host, String path, DBRequestMethod requestMethod,
-      {Map<String, dynamic> headers}) async {
-    http.Response response;
-
-    // print('\n*** Request url: $url');
-    // print('Method: ${requestMethod.toString()}');
-
-    switch (requestMethod) {
-      case DBRequestMethod.GET:
-        response = await http.get(Uri.https(host, path));
-        break;
-
-      case DBRequestMethod.POST:
-        // todo: add params
-        response = await http.post(Uri.https(host, path));
-        break;
-    }
-
-    // print('\n*** Response url: $url');
-    // print('Method: ${requestMethod.toString()}');
-    // print('Status code: ${response.statusCode}');
-
-    if (response.statusCode >= 200 && response.statusCode <= 300) {
-      // print("Body: ${jsonDecode(response.body)}");
-      return response;
-    } else {
-      throw Exception('$response');
-    }
-  }
-}
+import 'package:DogBreeds/DBClientAPI.dart';
 
 abstract class DBDogBreedsEnpointInterface {
+  DBClientAPI get apiClient;
+
+  DBDogBreedsEnpointInterface({DBClientAPI apiClient});
   Future<List<DBDogBreedModel>> getAllDogBreeds();
   Future<DBDogBreedModel> getAllDogSubBreeds(DBDogBreedModel dogBreed);
   Future<String> getBreedRadomImageUrl(String dogBreed);
@@ -48,6 +16,8 @@ abstract class DBDogBreedsEnpointInterface {
 }
 
 class DBDogBreedsEnpoint implements DBDogBreedsEnpointInterface {
+  @override
+  DBClientAPI get apiClient => _apiClient;
   DBClientAPI _apiClient;
 
   static String hostName = 'dog.ceo';
@@ -56,7 +26,8 @@ class DBDogBreedsEnpoint implements DBDogBreedsEnpointInterface {
     return '/api/breed/$dogBreed/images';
   }
 
-  DBDogBreedsEnpoint() : _apiClient = DBClientAPI();
+  DBDogBreedsEnpoint({DBClientAPI apiClient})
+      : _apiClient = apiClient ?? DBClientAPI();
 
   Future<List<DBDogBreedModel>> getAllDogBreeds() async {
     final responseFuture = _apiClient.makeRequest(
@@ -124,7 +95,12 @@ class DBDogBreedsEnpoint implements DBDogBreedsEnpointInterface {
   ///
   Future<Map<String, List<DBDogSubBreedModel>>> getAllBreedRadomImagesUrlFor(
       DBDogBreedModel dogBreed) async {
-    return compute(getAllDogSubBreedsWithImages, dogBreed);
+    final Map<String, dynamic> params = {
+      "dogBreed": dogBreed,
+      "apiClient": _apiClient
+    };
+
+    return compute(getAllDogSubBreedsWithImages, params);
   }
 }
 
@@ -133,11 +109,13 @@ class DBDogBreedsEnpoint implements DBDogBreedsEnpointInterface {
 /// Keys for [arguments] Map are:'imageHostName', 'urls', 'dogBreed'
 ///
 Future<Map<String, List<DBDogSubBreedModel>>> getAllDogSubBreedsWithImages(
-    DBDogBreedModel dogBreed) async {
-  final _apiClient = DBClientAPI();
+    Map<String, dynamic> params) async {
+  final dogBreed = params["dogBreed"] as DBDogBreedModel;
+  final apiClient = params["apiClient"] as DBClientAPI;
+
   String imageHostName = DBDogBreedsEnpoint.imageHostName;
 
-  final response = await _apiClient.makeRequest(
+  final response = await apiClient.makeRequest(
       DBDogBreedsEnpoint.hostName,
       "${DBDogBreedsEnpoint.allBreedImagesPath(dogBreed.name)}",
       DBRequestMethod.GET);
@@ -158,8 +136,8 @@ Future<Map<String, List<DBDogSubBreedModel>>> getAllDogSubBreedsWithImages(
     var subBreedName = trimmedStr.split('/').first;
 
     if (subBreedName != null) {
-      final newSubBreed =
-          DBDogSubBreedModel(name: subBreedName, imageUrl: imageUrl);
+      final newSubBreed = DBDogSubBreedModel(
+          name: subBreedName, imageUrl: imageUrl, dogBreed: dogBreed.name);
       final tmpSubBreedList = [newSubBreed];
       var existingArray = mapOfArrays[newSubBreed.name];
 
